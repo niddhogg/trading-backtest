@@ -1,5 +1,6 @@
 package org.lst.trading.lib.series;
 
+import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
 
@@ -93,4 +94,6 @@ public class DoubleSeries extends TimeSeries<Double> {
                 ", size=" + mData.size() +
                 '}';
     }
+    
+    
 }

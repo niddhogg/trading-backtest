@@ -213,4 +213,23 @@ public class TimeSeries<T> implements Iterable<TimeSeries.Entry<T>> {
                 ", size=" + mData.size() +
                 '}';
     }
+    
+    /*
+    public TimeSeries<T> filterByTime(Date min, Date max) {
+        ArrayList<Entry<T>> entries = new ArrayList<>();
+        
+        Instant imin = min.toInstant();
+        Instant imax = max.toInstant().plus(1, ChronoUnit.DAYS);
+        
+        //Collections.reverse(entries);
+        for (Entry<T> data: mData) {
+            Instant instant = data.getInstant();
+            if ((instant.isAfter(imin)) && (instant.isBefore(imax))) {
+                entries.add(data);
+            }
+        }
+        
+        return new TimeSeries<>(entries);
+    }*/
+    
 }

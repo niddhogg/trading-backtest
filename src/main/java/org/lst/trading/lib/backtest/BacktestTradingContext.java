@@ -23,6 +23,7 @@ class BacktestTradingContext implements TradingContext {
     MultipleDoubleSeries mHistory;
     double mInitialFunds;
     double mCommissions;
+    double mRealFunds;
 
     int mOrderId = 1;
 
@@ -53,7 +54,11 @@ class BacktestTradingContext implements TradingContext {
         mOrders.add(order);
 
         mCommissions += calculateCommission(order);
-
+        
+        // calculate currently available funds
+        mRealFunds -= price * amount * (buy ? 1 : -1);
+        
+        //
         return order;
     }
 
@@ -95,6 +100,10 @@ class BacktestTradingContext implements TradingContext {
 
     double calculateCommission(Order order) {
         return 1 + Math.abs(order.getAmount()) * 0.005;
+    }
+    
+    @Override public double getRealFunds() {
+        return mRealFunds;
     }
 }
 

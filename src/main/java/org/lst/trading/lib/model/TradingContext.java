@@ -28,4 +28,6 @@ public interface TradingContext {
     double getNetValue();
 
     double getLeverage();
+    
+    double getRealFunds();
 }

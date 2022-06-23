@@ -130,6 +130,7 @@ public class Backtest {
         mContext.mHistory = new MultipleDoubleSeries(mContext.mInstruments);
         mContext.mInitialFunds = mDeposit;
         mContext.mLeverage = mLeverage;
+        mContext.mRealFunds = mDeposit;
         strategy.onStart(mContext);
         mPriceIterator = mPriceSeries.iterator();
         nextStep();
@@ -147,10 +148,12 @@ public class Backtest {
         mContext.mInstant = entry.getInstant();
         mContext.mPl.add(mContext.getPl(), entry.getInstant());
         mContext.mFundsHistory.add(mContext.getAvailableFunds(), entry.getInstant());
+        
+        /*
         if (mContext.getAvailableFunds() < 0) {
             finish();
             return false;
-        }
+        }*/
 
         mStrategy.onTick();
 

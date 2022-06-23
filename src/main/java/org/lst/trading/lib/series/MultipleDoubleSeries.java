@@ -1,15 +1,21 @@
 package org.lst.trading.lib.series;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import rx.Observable;
 
 public class MultipleDoubleSeries extends TimeSeries<List<Double>> {
     List<String> mNames;
+    List<Entry<List<Double>>> original_data;
+   
 
     public MultipleDoubleSeries(Collection<String> names) {
         mNames = new ArrayList<>(names);
@@ -17,6 +23,7 @@ public class MultipleDoubleSeries extends TimeSeries<List<Double>> {
 
     public MultipleDoubleSeries(DoubleSeries... series) {
         mNames = new ArrayList<>();
+        
         for (int i = 0; i < series.length; i++) {
             if (i == 0) {
                 _init(series[i]);
@@ -24,7 +31,11 @@ public class MultipleDoubleSeries extends TimeSeries<List<Double>> {
                 addSeries(series[i]);
             }
         }
+        
+        // save original data
+        original_data = mData;
     }
+    
 
     void _init(DoubleSeries series) {
         mData = new ArrayList<>();
@@ -66,5 +77,40 @@ public class MultipleDoubleSeries extends TimeSeries<List<Double>> {
                 ", to=" + mData.get(mData.size() - 1).getInstant() +
                 ", size=" + mData.size() +
                 '}';
+    }
+    
+    public void filterByTime(Date min, Date max) {
+        ArrayList<Entry<List<Double>>> entries = new ArrayList<>();
+        
+        Instant imin = min.toInstant();
+        Instant imax = max.toInstant().plus(1, ChronoUnit.DAYS);
+                
+        for (Entry<List<Double>> data : mData) {
+            Instant instant = data.getInstant();
+            if ((instant.isAfter(imin)) && (instant.isBefore(imax))) {
+                entries.add(data);
+            }
+        }
+        
+        mData = entries;
+    }
+    
+    public void filterByTimeAndYears(Date min, int years) {
+        ArrayList<Entry<List<Double>>> entries = new ArrayList<>();
+        
+        Instant imin = min.toInstant();
+        Instant imax = imin.plus(years*365, ChronoUnit.DAYS);
+                
+        // using original data here so when we filter it works nicely
+        for (Entry<List<Double>> data : original_data) { 
+            Instant instant = data.getInstant();
+            if ((instant.isAfter(imin)) && (instant.isBefore(imax))) {
+                entries.add(data);
+            }
+        }
+        
+        mData = entries;
+        
+        
     }
 }
